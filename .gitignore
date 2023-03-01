@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+#dir
+airflow-de-analytics/postgresql_airflow_data
