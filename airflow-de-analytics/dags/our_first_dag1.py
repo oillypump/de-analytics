@@ -1,5 +1,6 @@
 from datetime import timedelta, datetime
 from airflow import DAG
+from airflow.decorators import task
 from airflow.operators.bash import BashOperator
 
 default_args = {
@@ -9,16 +10,14 @@ default_args = {
 }
 
 with DAG(
-    dag_id='our_first_dag1',
+    dag_id='scrap_1',
     default_args=default_args,
     description='this is our first dag',
-    start_date=datetime(2023, 2, 23, 2),
+    start_date=datetime(2023, 2, 28),
     schedule_interval='@daily'
 
 ) as dag:
-    task1 = BashOperator(
-        task_id="first_task1",
-        bash_command="echo hello world"
-    )
-
-    task1
+    
+    @task
+    def request_url():
+        pass
