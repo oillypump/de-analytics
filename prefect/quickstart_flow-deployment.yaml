@@ -1,0 +1,40 @@
+###
+### A complete description of a Prefect Deployment for flow 'Prefect Cloud Quickstart'
+###
+name: log-simple
+description: null
+version: 76ca682c875254a6e1bbe7ab596ec6c7
+# The work queue that will handle this deployment's runs
+work_queue_name: test
+work_pool_name: null
+tags: []
+parameters: {}
+schedule: null
+is_schedule_active: null
+infra_overrides: {}
+infrastructure:
+  type: process
+  env: {}
+  labels: {}
+  name: null
+  command: null
+  stream_output: true
+  working_dir: null
+  block_type_slug: process
+  _block_type_slug: process
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: Prefect Cloud Quickstart
+manifest_path: null
+storage: null
+path: /home/ubuntu/work/python3/de-analytics/prefect
+entrypoint: flow/test_local_to_cloud.py:quickstart_flow
+parameter_openapi_schema:
+  title: Parameters
+  type: object
+  properties: {}
+  required: null
+  definitions: null
+timestamp: '2023-03-22T07:59:45.887496+00:00'
