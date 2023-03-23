@@ -1,0 +1,3 @@
+prefect-sqlalchemy==0.2.4
+SQLAlchemy==1.4.46
+prefect-gcp[cloud_storage]==0.2.3
