@@ -6,6 +6,7 @@ import pandas as pd
 from datetime import datetime
 from pathlib import Path
 from prefect_gcp.cloud_storage import GcsBucket
+import os
 
 
 @task(name="Crawl Task", log_prints=True)
@@ -59,13 +60,14 @@ def write_local(df: pd.DataFrame, dataset_file: str):
 @task()
 def write_gcs(path: Path) -> None:
     """upload parquet to GCS"""
-
     gcs_block = GcsBucket.load("bucket-google")
     gcs_block.upload_from_path(
         from_path=f"{path}",
         to_path=path
     )
-
+    """remove existing data on file system"""
+    cmd =F"rm {path}"
+    os.system(cmd)
 
 @flow(name="Scrap Flow", log_prints=True)
 def main_flow():
@@ -77,7 +79,7 @@ def main_flow():
     now = datetime.now()
     date = now.strftime("%d/%m/%Y")  # dd/mm/yyyy
 
-    url = f'https://www.detik.com/search/searchall?query={key}&sortby=time&sorttime=0&fromdatex={date}&todatex={date}&siteid=2'
+    url = f"https://www.detik.com/search/searchall?query={key}&sortby=time&sorttime=0&fromdatex={date}&todatex={date}&siteid=2"
 
     raw_data = scrap_task(url, key, headers)
     df = transform_data(raw_data)

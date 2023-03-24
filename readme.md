@@ -18,3 +18,17 @@ If you see that ny_taxi_postgres_data is empty after running the container, try 
 
 Deleting the folder and running Docker again (Docker will re-create the folder)
 Adjust the permissions of the folder by running ```sudo chmod a+rwx ny_taxi_postgres_data```
+
+
+
+# google 
+
+
+```
+export GOOGLE_APPLICATION_CREDENTIALS="<path/to/your/service-account-authkeys>.json"
+gcloud auth application-default login
+```
+
+```
+ssh-keygen -t rsa -f ~/.ssh/KEY_FILENAME -C USERNAME -b 2048
+```
