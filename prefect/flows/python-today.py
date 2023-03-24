@@ -10,5 +10,5 @@ dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 print("date and time =", dt_string)
 
 
-date = now.strftime("%d/%m/%Y")
+date = now.strftime("%d_%m_%Y")
 print("date ",date)

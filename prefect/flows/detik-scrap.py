@@ -32,22 +32,23 @@ for i in items:
 
     req_ = requests.get(link_url, headers=headers)
     soup_ = bs(req_.text, 'html.parser')
-    author = soup_.find('div', 'detail__author').text.split('-')[0]
     content = soup_.findAll('div', 'detail__body itp_bodycontent')
 
-    # for x in content:
-    #     x = x.find_all('p')
-    #     y = [y.text for y in x]
-    #     content_ = ''.join(y).replace('\r\n', " ").replace(
-    #         'ADVERTISEMENT', '').replace('SCROLL TO CONTINUE WITH CONTENT', '').replace('                            ', ' ').replace('[Gambas:Video 20detik]', '')
+    for x in content:
+        author = soup_.find('div', 'detail__author').text.split('-')[0]
+        x = x.find_all('p')
+        y = [y.text for y in x]
+        content_ = ''.join(y).replace('\r\n', " ").replace(
+            'ADVERTISEMENT', '').replace('SCROLL TO CONTINUE WITH CONTENT', '').replace('                            ', ' ').replace('[Gambas:Video 20detik]', '')
 
     unique_id = name
     unique_id_bytes = unique_id.encode("ascii")
     base64_bytes = base64.b64encode(unique_id_bytes)
     generated_id = base64_bytes.decode("ascii")
 
-    print(generated_id, '||', name, '||', link_url,
-          '||', category, '||', author, '||', waktu_post)
+    print(generated_id, '||', name, '||', link_url, '||', author, '||', category, '||', waktu_post ,'||' ,content_)
+
+    # print(url)
 
     # datas.append(
     #     [link_url, name, author, waktu_post, category, content_])
