@@ -8,6 +8,7 @@ gcsfuse -o allow_other  -file-mode=777 -dir-mode=777 test_bucket_00 /data/cloud/
 ```
 prefect api key
 pnu_FJ0dVjfh2T91niQMlySjhwqFNM4jvY0xpSeY
+pnu_R3eC1ZtFElDACh7svO654YLRhQ1Cvh1jmq4l
 ```
 
 ```
@@ -31,4 +32,21 @@ gcloud auth application-default login
 
 ```
 ssh-keygen -t rsa -f ~/.ssh/KEY_FILENAME -C USERNAME -b 2048
+```
+
+
+pip freeze >> requirements.txt
+
+
+# prefect 
+
+```
+prefect server start
+prefect agent start -q 'default'
+```
+
+```
+nohup prefect server start > server.logs
+nohup prefect agent start -q 'default' > agent.logs
+
 ```
