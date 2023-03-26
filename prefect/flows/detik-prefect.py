@@ -53,8 +53,18 @@ def transform_data(df):
 
 @task(name="Write Local", log_prints=True)
 def write_local(df: pd.DataFrame, dataset_file: str):
+    
     path = Path(f"data/{dataset_file}.parquet")
-    df.to_parquet(path, compression="gzip")
+    if path.is_file() == True:
+        df_before = pd.read_parquet(f"{path}")
+        df_new = pd.concat([df_before, df])
+        df_new.to_parquet(path, compression="gzip")
+        print(df_new)
+        print('this is concat cases')
+    else:
+        df.to_parquet(path, compression="gzip")
+        print('this is write new')
+    
     return path
 
 @task()
@@ -66,12 +76,13 @@ def write_gcs(path: Path) -> None:
         to_path=path
     )
     """remove existing data on file system"""
-    cmd =F"rm {path}"
-    os.system(cmd)
+    # cmd =F"rm {path}"
+    # os.system(cmd)
 
 @flow(name="Scrap Flow", log_prints=True)
 def main_flow():
 
+    """1. flow scrap"""
     headers = {
         'user-agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Mobile Safari/537.36'}
 
@@ -82,11 +93,17 @@ def main_flow():
     url = f"https://www.detik.com/search/searchall?query={key}&sortby=time&sorttime=0&fromdatex={date}&todatex={date}&siteid=2"
 
     raw_data = scrap_task(url, key, headers)
+
+    """2. transform data/give header column"""
     df = transform_data(raw_data)
 
-    dataset_date = now.strftime("%d_%m_%Y_%H_%M_%S")
+    """3. write to local"""
+    # dataset_date = now.strftime("%d_%m_%Y_%H_%M_%S")
+    dataset_date = now.strftime("%d_%m_%Y")
     dataset_file = f"detik_{dataset_date}"
     path = write_local(df, dataset_file)
+
+    """4. write to gcs"""
     write_gcs(path)
 
 
