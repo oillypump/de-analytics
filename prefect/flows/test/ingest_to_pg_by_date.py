@@ -5,7 +5,7 @@ from prefect_gcp.cloud_storage import GcsBucket
 from prefect_sqlalchemy import SqlAlchemyConnector
 import psycopg2
 import sqlalchemy
-# from prefect.engine.signals import SKIP
+from datetime import datetime
 
 
 @task(name="download parquet from g bucket", log_prints=True)
@@ -36,7 +36,6 @@ def read_data(path: Path) -> pd.DataFrame:
     df['waktu_post'] = pd.to_datetime(df['waktu_post'])
 
     #
-    print(f"print type column :\n{df.dtypes}")
     print(f"\n")
     print(f"jumlah row count :\n{len(df)}")
 
@@ -49,10 +48,8 @@ def read_data(path: Path) -> pd.DataFrame:
     df = df.sort_values(by='waktu_post')
     df['keyword'] = "pemilu 2024"
 
-    # set index
-    # df = df.set_index('generated_id')
-    df = df.reset_index(drop=True)
-    print(df)
+    print(f" data from gbucket: \n{df}")
+    print(f"print type column :\n{df.dtypes}")
 
     return df
 
@@ -61,7 +58,7 @@ def read_data(path: Path) -> pd.DataFrame:
 def insert_to_pg(table_name, df):
 
     sql_query = f'''
-        SELECT generated_id,author
+        SELECT generated_id
         FROM {table_name}
     '''
 
@@ -71,34 +68,38 @@ def insert_to_pg(table_name, df):
         existing_data = []
         try:
             existing_data = pd.read_sql(sql_query, con=engine)
-            # existing_data = existing_data.set_index('generated_id')
 
             print(f"existing data : \n{existing_data}")
+            print(f"jumlah row count :\n{len(existing_data)}")
         except psycopg2.errors.UndefinedTable:
             print("table not exist : dari psycopg2 errors")
         except sqlalchemy.exc.ProgrammingError:
             print("table not exist: dari sqlalchemy")
 
         if len(existing_data) > 1:
-
-            df = pd.concat([existing_data, df])
-            print(f"concate dataframe : \n{df}")
-            df = df.drop_duplicates(subset="generated_id", keep="last")
-
-            # if df.empty:
-            #     raise SKIP("Dataframe has no new records to insert")
+            
+            df = df[~df['generated_id'].isin(existing_data['generated_id'])]
             
             print(f"drop duplicate dataframe : \n{df}")
-            
-            # df = df.set_index('generated_id')
-            df.head(n=0).to_sql(name=table_name,
-                                con=engine, if_exists="replace")
-            df.to_sql(name=table_name, con=engine, if_exists='append')
+
+
+            df = df.reset_index(drop=True)
+            df = df.set_index('generated_id')
+            print(f"reset index dataframe : \n{df}")
+
+            if len(df) > 0:
+                print("insert new record")
+                df.to_sql(name=table_name, con=engine, if_exists='append')
+            else: 
+                print(f"no new record")
 
         else:
-            # df = df.set_index('generated_id')
-            df.head(n=0).to_sql(name=table_name,
-                                con=engine, if_exists="replace")
+            
+            print(f"no existing table")
+            df = df.reset_index(drop=True)
+            df = df.set_index('generated_id')
+
+            df.head(n=0).to_sql(name=table_name, con=engine, if_exists="replace")
             df.to_sql(name=table_name, con=engine, if_exists='append')
 
 
@@ -115,16 +116,17 @@ def delete_file(path: Path):
 @flow(name="ingest flow", log_prints=True)
 def ingest_to_pg():
     """1. download from gc bucket"""
-    date = 26
+    date = 27
     month = 3
     year = 2023
+    
     path = download_from_bucket(date, month, year)
 
     """2. transform"""
     data = read_data(path)
 
     """3. truncate insert to table"""
-    insert_to_pg("test_table", data)
+    insert_to_pg("detik_table", data)
 
     """4. remove_file"""
     delete_file(path)
