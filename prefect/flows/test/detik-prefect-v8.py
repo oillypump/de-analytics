@@ -58,11 +58,12 @@ def transform_data(df):
 @task(name="Write Local", log_prints=True)
 def write_local(df: pd.DataFrame, dataset_file: str):
 
-    path = Path(
-        f"/home/ubuntu/apps/de-analytics/prefect/flows/data/{dataset_file}.parquet")
-    
     gcs_path = f"data/{dataset_file}.parquet"
     gcs_block = GcsBucket.load("bucket-google")
+
+    path = Path(
+        f"/home/ubuntu/apps/de-analytics/prefect/flows/data/{dataset_file}.parquet")
+
     if path.is_file() == False:
         df.to_parquet(path, compression="gzip")
         print('this is write new')

@@ -1,0 +1,5 @@
+firstname userMetabase
+lastname Metabase
+email userMetabase@email.com
+departmentAwesome
+pass userMetabase123
