@@ -33,6 +33,8 @@ services:
       POSTGRES_USER_FILE: /run/secrets/db_user
       POSTGRES_DB: metabase
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    volumes:
+      - "./data/pg_metabase:/var/lib/postgresql/data:rw"
     ports:
       - "5433:5432"
     networks:

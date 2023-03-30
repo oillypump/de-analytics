@@ -1,5 +1,6 @@
 firstname userMetabase
 lastname Metabase
 email userMetabase@email.com
-departmentAwesome
+
+company departmentAwesome
 pass userMetabase123

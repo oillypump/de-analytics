@@ -35,7 +35,6 @@ def read_data(path: Path) -> pd.DataFrame:
     # convert as datetime column waktu_post
     df['waktu_post'] = pd.to_datetime(df['waktu_post'])
 
-    #
     print(f"\n")
     print(f"jumlah row count :\n{len(df)}")
 
@@ -47,7 +46,10 @@ def read_data(path: Path) -> pd.DataFrame:
     # sort by datetime and and column keyword search
     df = df.sort_values(by='waktu_post')
     df['keyword'] = "pemilu 2024"
-
+    
+    # df.reset_index(drop=True, inplace=True)
+    df.set_index('generated_id')
+    
     print(f" data from gbucket: \n{df}")
     print(f"print type column :\n{df.dtypes}")
 
@@ -68,7 +70,8 @@ def insert_to_pg(table_name, df):
         existing_data = []
         try:
             existing_data = pd.read_sql(sql_query, con=engine)
-
+            # existing_data = pd.read_sql_table(table_name, con=engine, schema='public')
+            
             print(f"existing data : \n{existing_data}")
             print(f"jumlah row count :\n{len(existing_data)}")
         except psycopg2.errors.UndefinedTable:
@@ -78,29 +81,28 @@ def insert_to_pg(table_name, df):
 
         if len(existing_data) > 1:
             
-            df = df[~df['generated_id'].isin(existing_data['generated_id'])]
+            # df = df[~df['generated_id'].isin(existing_data['generated_id'])]
+            df = df[~df.index.isin(existing_data.index)]
             
             print(f"drop duplicate dataframe : \n{df}")
 
-
-            df = df.reset_index(drop=True)
             df = df.set_index('generated_id')
             print(f"reset index dataframe : \n{df}")
 
             if len(df) > 0:
                 print("insert new record")
-                df.to_sql(name=table_name, con=engine, if_exists='append')
+                df.to_sql(name=table_name, con=engine, if_exists='append', index=True, index_label='generated_id')
             else: 
                 print(f"no new record")
 
         else:
             
             print(f"no existing table")
-            df = df.reset_index(drop=True)
+            # df = df.reset_index(drop=True)
             df = df.set_index('generated_id')
 
-            df.head(n=0).to_sql(name=table_name, con=engine, if_exists="replace")
-            df.to_sql(name=table_name, con=engine, if_exists='append')
+            # df.head(n=0).to_sql(name=table_name, con=engine, if_exists="replace")
+            df.to_sql(name=table_name, con=engine, if_exists='append', index=True, index_label='generated_id')
 
 
 @task(log_prints=True)
@@ -116,7 +118,7 @@ def delete_file(path: Path):
 @flow(name="ingest flow", log_prints=True)
 def ingest_to_pg():
     """1. download from gc bucket"""
-    date = 27
+    date = 29
     month = 3
     year = 2023
     
@@ -126,7 +128,7 @@ def ingest_to_pg():
     data = read_data(path)
 
     """3. truncate insert to table"""
-    insert_to_pg("detik_table", data)
+    # insert_to_pg("test_table", data)
 
     """4. remove_file"""
     delete_file(path)

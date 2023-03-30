@@ -133,3 +133,9 @@ dmypy.json
 *.parquet
 *.logs
 
+# foldermetabase
+/metabase/data/*    
+/metabase/dev/*    
+
+
+
