@@ -5,7 +5,8 @@
 ## to do
 [] create dashboard wordcloud yang isinya 
 [] tarik ulang data content pass date untuk wordcloud
-[] 
+[X] scrip counter nama tokoh berhasil running, tinggal penyesuaian input dan outputnya,
+[] tarik ulang table data untuk content
 
 ## dataflow
 
