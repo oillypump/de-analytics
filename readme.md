@@ -5,21 +5,21 @@
 
 [de_analytics_dashboard](http://35.223.23.31:3000/public/dashboard/53ca46a7-2745-406e-ac8e-482846b61675)
 
-<<<<<<< HEAD
 ## to do
-[] create dashboard wordcloud yang isinya 
-[] tarik ulang data content pass date untuk wordcloud
-[X] scrip counter nama tokoh berhasil running, tinggal penyesuaian input dan outputnya,
-[] tarik ulang table data untuk content
-=======
-### to do
-- [ ] create dashboard wordcloud yang isinya 
-- [ ] tarik ulang data content pass date untuk wordcloud
-- [ ] jelaskan penggunaan google
-- [ ] jelaskan penggunaan prefect
-- [ ] jelaskan docker  
+1. [x] create dashboard wordcloud / tingkat kepopuleran tokoh 
+    - [x] create flow untuk counter dari column name dan column content
+    - [x] deploy flow untuk counter dari column name dan column content
+    - [x] create / tarik ulang data content pass date untuk wordcloud
+    - [x] scrip counter nama tokoh berhasil running, tinggal penyesuaian input dan outputnya,
+    - [x] stop script ingest_to_pg_v1 dan scrap_v7 terakhir hari ini 2 Apr
+    - [x] migrate data detik_table ke detik_scrap_table
 
->>>>>>> 37d5a90c122f771856d5f7db92cb6445d6b58870
+    
+2. [ ] jelaskan penggunaan google
+3. [ ] jelaskan penggunaan prefect
+4. [ ] jelaskan docker  
+5. [ ] perbaiki flow scrap ketika scrap tidak duplicate
+
 
 ## dataflow
 
