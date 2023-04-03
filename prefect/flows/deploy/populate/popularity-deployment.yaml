@@ -1,0 +1,40 @@
+###
+### A complete description of a Prefect Deployment for flow 'Popularity Count V3'
+###
+name: Popularity Tokoh V3
+description: 1. read to df, table detik_scrap column content and name
+version: V3
+# The work queue that will handle this deployment's runs
+work_queue_name: default
+work_pool_name: null
+tags: []
+parameters: {}
+schedule: null
+is_schedule_active: null
+infra_overrides: {}
+infrastructure:
+  type: process
+  env: {}
+  labels: {}
+  name: null
+  command: null
+  stream_output: true
+  working_dir: null
+  block_type_slug: process
+  _block_type_slug: process
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: Popularity Count V3
+manifest_path: null
+storage: null
+path: /home/ubuntu/apps/de-analytics/prefect/flows/deploy/populate
+entrypoint: counter_popularity.py:popularity
+parameter_openapi_schema:
+  title: Parameters
+  type: object
+  properties: {}
+  required: null
+  definitions: null
+timestamp: '2023-04-03T08:46:41.244855+00:00'

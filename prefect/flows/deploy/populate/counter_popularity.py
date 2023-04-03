@@ -18,12 +18,11 @@ def read_heading_content() -> pd.DataFrame:
 
         heading_content = pd.read_sql(sql_query, con=engine)
 
-        if heading_content['content'].isnull().any() == True:
-            heading_content['combined'] = heading_content['name']
-        else:
-            heading_content['combined'] = heading_content['name'] + \
+        heading_content['content'].fillna(
+            heading_content['name'], inplace=True)
+        heading_content['combined'] = heading_content['name'] + \
             ' ' + heading_content['content']
-        # print(f"heading dan content :\n{heading_content}")
+
 
     return (heading_content)
 
@@ -92,7 +91,7 @@ def insert_to_db(table_name, df_output):
         df_output.to_sql(name=table_name, con=engine, if_exists='replace')
 
 
-@flow(name="Popularity Count", log_prints=True)
+@flow(name="Popularity Count V3", log_prints=True)
 def popularity():
     """1. read to df, table detik_scrap column content and name"""
     heading_content = read_heading_content()
