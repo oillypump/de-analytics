@@ -126,3 +126,5 @@ sudo chown 5050:5050 data_pgadmin
 ```
 gcsfuse -o allow_other  -file-mode=777 -dir-mode=777 test_bucket_00 /data/cloud/tb-00
 ```
+
+test push with multiple account
